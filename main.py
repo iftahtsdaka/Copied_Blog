@@ -220,5 +220,8 @@ def delete_post(post_id):
     return redirect(url_for('get_all_posts'))
 
 
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    # For HEROKU
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
