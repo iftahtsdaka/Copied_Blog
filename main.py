@@ -10,9 +10,10 @@ from flask_login import UserMixin, login_user, LoginManager, current_user, logou
 from functools import wraps
 from forms import CreatePostForm, RegistrationForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 ckeditor = CKEditor(app)
 Bootstrap(app)
 login_manager = LoginManager()
@@ -66,7 +67,6 @@ gravatar = Gravatar(app,
                     force_lower=False,
                     use_ssl=False,
                     base_url=None)
-
 
 db.create_all()
 
@@ -169,9 +169,8 @@ def about():
 def contact():
     return render_template("contact.html")
 
-
-@app.route("/new-post", methods=['GET', 'POST'])
 @admin_only
+@app.route("/new-post", methods=['GET', 'POST'])
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -189,8 +188,8 @@ def add_new_post():
     return render_template("make-post.html", form=form)
 
 
-@app.route("/edit-post/<int:post_id>")
 @admin_only
+@app.route("/edit-post/<int:post_id>")
 def edit_post(post_id):
     post = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(
@@ -212,8 +211,8 @@ def edit_post(post_id):
     return render_template("make-post.html", form=edit_form)
 
 
-@app.route("/delete/<int:post_id>")
 @admin_only
+@app.route("/delete/<int:post_id>")
 def delete_post(post_id):
     post_to_delete = BlogPost.query.get(post_id)
     db.session.delete(post_to_delete)
